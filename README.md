@@ -10,7 +10,7 @@ A bot to quicly get the colloquial definition of a word from the site urban dict
 
 I recommend following discord's [getting started guide](https://discord.com/developers/docs/getting-started) to create the bot and the url used to add the bot to the server.
 
-This bot require the following scope : 
+This bot requires the following scope : 
 - bot with the permisions
     - Send Messages
     - Use Slash Commands
