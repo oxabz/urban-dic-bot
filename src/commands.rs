@@ -138,13 +138,13 @@ impl DefinitionCommand{
                 button.label("previous");
                 button.emoji('◀');
                 button.custom_id(format!("page#{interaction_id}#{word}#{}", page.max(1)-1));
-                button.disabled(page == 0);
+                button.disabled(total_pages > 0 && page == 0);
                 button
             }).create_button(|button|{
                 button.label("next");
                 button.emoji('▶');
                 button.custom_id(format!("page#{interaction_id}#{word}#{}", page+1));
-                button.disabled(page == total_pages - 1);
+                button.disabled(total_pages > 0 && page == total_pages - 1);
                 button
             })
         });
