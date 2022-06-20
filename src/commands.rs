@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::time::Duration;
 
 use regex::Regex;
 use serenity::builder::{CreateEmbed, CreateComponents};
@@ -66,8 +67,12 @@ impl DefinitionCommand{
             
             resp
         }).await.expect("DefinitionCommand : Error creating response");
-
+        
         ctx.data.write().await.get_mut::<DefinitionInteractionData>().unwrap().insert(interaction_id, msg.clone());
+
+        tokio::time::sleep(Duration::from_secs(600)).await;
+
+        Self::timeout_interaction(ctx, interaction_id).await;
 
         true
     }
@@ -146,4 +151,21 @@ impl DefinitionCommand{
         comp
     }
 
+    fn disabled_page_componnent<'a>(comp: &'a mut CreateComponents) -> &'a mut CreateComponents{
+        comp
+    }
+
+    async fn timeout_interaction(ctx:&Context, interaction_id: u64){
+        let mut lock = ctx.data.write().await;
+        let interactions = lock.get_mut::<DefinitionInteractionData>().unwrap();
+        let interaction = interactions.remove(&interaction_id);
+
+        if let Some(interaction) = interaction {
+            interaction.edit_original_interaction_response(ctx, |resp|{
+                resp.components(|e|Self::disabled_page_componnent(e));
+                resp
+            }).await.expect("DefinitionCommand : Error editing response");
+        }
+
+    }
 }
