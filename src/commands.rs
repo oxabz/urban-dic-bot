@@ -25,7 +25,7 @@ impl DefinitionCommand{
         data.insert::<DefinitionInteractionData>(HashMap::new());
     }
 
-    pub fn create<'a>(command:&'a mut CreateApplicationCommand) -> &'a mut CreateApplicationCommand{
+    pub fn create(command:&mut CreateApplicationCommand) -> &mut CreateApplicationCommand{
         command.name("df");
         command.description("Returns the definition of a word. According to the Urban Dictionary.");
         command.create_option(|options|{
@@ -56,7 +56,7 @@ impl DefinitionCommand{
 
         let defs = define(word.as_str()).await.map_err(|err|{
             eprintln!("DefinitionCommand : Error getting definition: {}", err);
-        }).unwrap_or(vec![]);
+        }).unwrap_or_default();
         
         msg.create_interaction_response(ctx, move |resp|{
             resp.interaction_response_data(move |data|{
@@ -88,7 +88,7 @@ impl DefinitionCommand{
                 
                 let defs = define(word).await.map_err(|err|{
                     eprintln!("DefinitionCommand : Error getting definition: {}", err);
-                }).unwrap_or(vec![]);
+                }).unwrap_or_default();
                 
                 let lock = ctx.data.read().await;
                 let original_interaction = lock.get::<DefinitionInteractionData>().unwrap().get(&interaction_id).unwrap();
@@ -151,10 +151,6 @@ impl DefinitionCommand{
         comp
     }
 
-    fn disabled_page_componnent<'a>(comp: &'a mut CreateComponents) -> &'a mut CreateComponents{
-        comp
-    }
-
     async fn timeout_interaction(ctx:&Context, interaction_id: u64){
         let mut lock = ctx.data.write().await;
         let interactions = lock.get_mut::<DefinitionInteractionData>().unwrap();
@@ -162,7 +158,7 @@ impl DefinitionCommand{
 
         if let Some(interaction) = interaction {
             interaction.edit_original_interaction_response(ctx, |resp|{
-                resp.components(|e|Self::disabled_page_componnent(e));
+                resp.components(|e|e);
                 resp
             }).await.expect("DefinitionCommand : Error editing response");
         }

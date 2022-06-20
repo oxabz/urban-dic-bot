@@ -39,7 +39,7 @@ impl Replacer for MDLinkReplacer{
 impl Definition {
     pub fn md_formated_definition(&self) -> String {
         // Making the example a markdown citation
-        let example = self.example.replace("\n", "\n> ");
+        let example = self.example.replace('\n', "\n> ");
         
         // Merging the definition and example
         let def = format!("{}\n\n> {}", self.definition, example);
