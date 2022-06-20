@@ -2,7 +2,7 @@
 
 ![An example of the bot](assets/example.png)
 
-A bot to quicly get the colloquial definition of a word from the site urban dictionary.
+A bot to quickly get the colloquial definition of a word from the site urban dictionary.
 
 ## Install 
 
